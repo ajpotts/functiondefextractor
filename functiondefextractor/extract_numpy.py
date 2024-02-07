@@ -12,14 +12,13 @@ if __name__ == '__main__':
     print(my_path)
 
     df = extractor(my_path)
+
+    df['np_calls'] = df['Code'].str.findall(r"np\.([\w\.]*)")
+    df['num_np_calls'] = df['np_calls'].apply(lambda x: len(x))
+
+
+    my_out = "/home/amandapotts/git/functiondefextractor/data/scipy/scipy_function_definitions.csv"
+
     print(df)
 
-    #df['numpy'] = df['Code'].str.extractall(r"np.(\w*)")
-
-    my_out = "/home/amandapotts/git/personal-dev/data.csv"
-
     df.to_csv(my_out)
-
-    report = get_report(df, my_path)
-    print(report)
-    print(type(report))
