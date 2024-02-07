@@ -15,7 +15,9 @@ if __name__ == '__main__':
 
     df['np_calls'] = df['Code'].str.findall(r"np\.([\w\.]*)")
     df['num_np_calls'] = df['np_calls'].apply(lambda x: len(x))
+    df['np_calls_w_args'] = df['Code'].str.findall(r"np\.([\w\.]*\([\s\w=_]*\))")
     df['function'] = df['Uniq ID'].str.findall(r"/home/amandapotts/git/scipy/scipy/([\w_/]*)")
+    df = df.explode('function')
 
 
     my_out = "/home/amandapotts/git/functiondefextractor/data/scipy/scipy_function_definitions.csv"
