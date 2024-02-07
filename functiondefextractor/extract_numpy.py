@@ -47,7 +47,7 @@ if __name__ == '__main__':
     df_args = df_args[df_args['np_calls_w_args'].notnull()][["scipy_function", "np_calls_w_args"]]
     df_args['np_call'] = df_args['np_calls_w_args'].str.findall(r"(^[\w\.]*)")
     df_args = df_args.explode('np_call')
-    df_args['np_args'] = df_args['np_calls_w_args'].str.findall(r"([\w\s\._]*)=")
+    df_args['np_args'] = df_args['np_calls_w_args'].str.findall(r"([\w\._]*)\s*=")
     df_args = df_args.explode('np_args')
     df_args = df_args[df_args['np_args'].notnull()]
     df_args = df_args[["scipy_function", "np_call", "np_args"]]
@@ -63,4 +63,4 @@ if __name__ == '__main__':
 
 
     my_out3 = "/home/amandapotts/git/functiondefextractor/data/scipy/np_arg_stats.csv"
-    df_call_stats.to_csv(my_out2)
+    df_call_stats.to_csv(my_out3)
