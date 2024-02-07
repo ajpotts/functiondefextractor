@@ -1,455 +1,787 @@
-np_calls,num_scipy_funs_used_by,total_np_calls
-array,331,4261
-arange,229,1265
-zeros,221,1065
-asarray,200,1033
-inf,149,1469
-float64,144,544
-ones,139,614
-empty,123,469
-sqrt,122,633
-linspace,119,850
-nan,108,1325
-pi,103,855
-abs,103,595
-sum,101,454
-exp,95,637
-random.seed,94,546
-random.default_rng,94,435
-dot,93,435
-all,90,328
-sin,89,279
-isnan,79,374
-eye,77,351
-cos,75,221
-any,75,199
-concatenate,72,232
-errstate,68,208
-max,68,155
-float32,64,292
-ndarray,64,262
-allclose,64,203
-random.rand,63,480
-issubdtype,63,188
-vstack,62,147
-diag,61,251
-linalg.norm,61,146
-zeros_like,61,110
-log,58,506
-finfo,58,185
-full,57,215
-isfinite,57,203
-hstack,55,149
-newaxis,54,266
-dtype,53,129
-diff,51,112
-random.RandomState,50,187
-int64,49,149
-atleast_1d,48,113
-atleast_2d,45,86
-int32,44,147
-complex128,44,119
-unique,43,65
-sort,42,158
-random.randn,40,286
-mean,40,172
-prod,40,88
-ones_like,39,62
-where,37,119
-empty_like,36,62
-random.random,35,159
-min,35,75
-r_,33,126
-real,32,83
-nonzero,32,51
-maximum,31,79
-broadcast_to,30,73
-argsort,30,57
-complex64,29,134
-complexfloating,29,63
-moveaxis,28,86
-copy,28,67
-intp,27,75
-sign,27,71
-iscomplexobj,27,61
-argmax,27,42
-broadcast_arrays,26,63
-log10,25,104
-power,25,89
-isinf,24,65
-isscalar,24,65
-clip,24,56
-round,24,45
-reshape,24,36
-identity,23,88
-result_type,23,52
-cumsum,23,43
-shape,22,94
-integer,22,44
-floor,22,30
-logspace,20,82
-meshgrid,20,50
-argmin,20,29
-random.randint,19,63
-uint8,19,43
-bool_,19,41
-ceil,19,31
-repeat,18,62
-size,18,43
-random,18,42
-ravel,18,31
-minimum,18,30
-conj,17,56
-std,17,44
-nextafter,17,42
-int8,16,66
-tile,16,59
-full_like,16,29
-iinfo,16,29
-squeeze,16,23
-append,16,21
-int16,15,45
-floating,15,29
-asanyarray,15,27
-count_nonzero,15,21
-testing.assert_allclose,14,49
-amax,14,21
-inexact,14,19
-triu,13,57
-ascontiguousarray,13,41
-median,13,34
-tril,13,31
-linalg.solve,13,19
-random.uniform,12,40
-matrix,12,35
-float16,12,32
-number,12,31
-searchsorted,12,31
-c_,12,28
-spacing,12,28
-isclose,12,23
-uint16,12,18
-imag,11,62
-delete,11,48
-einsum,11,28
-linalg.matrix_rank,11,28
-uint64,11,18
-arctan2,11,16
-array_equal,10,78
-random.normal,10,44
-square,10,29
-take,10,28
-polyval,10,26
-expand_dims,10,22
-roll,10,22
-intc,10,19
-resize,10,18
-load,10,17
-mgrid,10,16
-amin,10,14
-uint32,10,10
-tan,9,42
-column_stack,9,32
-log1p,9,32
-outer,9,29
-arctan,9,26
-poly1d,9,22
-stack,9,21
-convolve,9,20
-equal,9,19
-var,9,19
-isrealobj,9,17
-asarray_chkfinite,9,15
-ndim,9,14
-testing.assert_equal,9,14
-angle,8,53
-logical_and,8,48
-object_,8,33
-vectorize,8,31
-multiply,8,28
-dstack,8,21
-testing.suppress_warnings,8,19
-pad,8,17
-logical_not,8,16
-absolute,8,15
-log2,8,14
-apply_along_axis,8,12
-insert,7,46
-ma.array,7,32
-asfortranarray,7,29
-swapaxes,7,27
-cosh,7,17
-random.shuffle,7,15
-random.Generator,7,14
-longdouble,7,13
-transpose,7,13
-linalg.inv,7,11
-bincount,7,10
-fill_diagonal,7,9
-flip,7,9
-unravel_index,7,9
-ma.masked_array,6,29
-can_cast,6,18
-cov,6,18
-promote_types,6,14
-ptp,6,13
-e,6,12
-isposinf,6,12
-sinh,6,12
-less,6,11
-percentile,6,11
-clongdouble,6,10
-expm1,6,10
-isneginf,6,10
-linalg.LinAlgError,6,10
-histogram,6,9
-hypot,6,8
-set_printoptions,6,8
-around,6,7
-linalg.lstsq,6,7
-linalg.svd,6,7
-arccos,6,6
-extract,5,15
-linalg.det,5,15
-linalg.eig,5,14
-take_along_axis,5,12
-matmul,5,11
-split,5,11
-unwrap,5,11
-frombuffer,5,10
-average,5,9
-cumprod,5,9
-kron,5,9
-nditer,5,9
-loadtxt,5,8
-random.permutation,5,8
-roots,5,8
-interp,5,6
-ix_,5,5
-random.choice,5,5
-testing.assert_array_equal,4,22
-isreal,4,18
-logical_or,4,16
-linalg.cholesky,4,9
-iterable,4,8
-place,4,8
-may_share_memory,4,7
-block,4,6
-inf.,4,6
-less_equal,4,6
-lexsort,4,6
-vander,4,6
-signedinteger,4,5
-cdouble,4,4
-flatnonzero,4,4
-ma.isMaskedArray,4,4
-float_power,3,36
-poly,3,15
-iscomplex,3,11
-linalg.matrix_power,3,11
-tril_indices,3,11
-arcsinh,3,10
-s_,3,10
-trace,3,10
-diagonal,3,8
-linalg.slogdet,3,8
-polymul,3,8
-typecodes,3,8
-tanh,3,7
-divide,3,6
-arctanh,3,5
-cross,3,5
-fabs,3,5
-fft.fft,3,5
-flipud,3,5
-float128,3,5
-linalg.qr,3,5
-ma.MaskedArray,3,5
-ma.masked_where,3,5
-nanmax,3,5
-nanmin,3,5
-random.exponential,3,5
-correlate,3,4
-mod,3,4
-ravel_multi_index,3,4
-rot90,3,4
-savetxt,3,4
-,3,3
-add.reduce,3,3
-broadcast,3,3
-bytes_,3,3
-common_type,3,3
-fft.irfft,3,3
-generic,3,3
-ndenumerate,3,3
-polyfit,3,3
-random.random_sample,2,22
-choose,2,11
-testing.assert_array_less,2,8
-arccosh,2,7
-random.chisquare,2,7
-random.pareto,2,7
-trim_zeros,2,7
-greater,2,6
-isin,2,6
-true_divide,2,6
-add,2,4
-corrcoef,2,4
-deg2rad,2,4
-exp2,2,4
-fromiter,2,4
-fromstring,2,4
-indices,2,4
-linalg.cond,2,4
-printoptions,2,4
-random.multivariate_normal,2,4
-seterr,2,4
-signbit,2,4
-conjugate,2,3
-diag_indices,2,3
-ldexp,2,3
-linalg.eigh,2,3
-min_scalar_type,2,3
-ndindex,2,3
-not_equal,2,3
-rad2deg,2,3
-sinc,2,3
-ufunc,2,3
-copysign,2,2
-fmax,2,2
-frexp,2,2
-lib.stride_tricks.as_strided,2,2
-ma.asarray,2,2
-ma.masked_greater,2,2
-nan_to_num,2,2
-ogrid,2,2
-put_along_axis,2,2
-savez_compressed,2,2
-select,2,2
-str_,2,2
-tensordot,2,2
-unsignedinteger,2,2
-void,2,2
-polynomial.Polynomial,1,10
-euler_gamma,1,8
-array.,1,6
-union1d,1,5
-array_repr,1,4
-complex256,1,4
-fft.fftfreq,1,4
-fft.fftshift,1,4
-float96,1,4
-fmod,1,4
-isfortran,1,4
-ndarray.tolist,1,4
-polydiv,1,4
-radians,1,4
-rec.fromarrays,1,4
-vdot,1,4
-apply_along_axis.,1,3
-arcsin,1,3
-cbrt,1,3
-datetime64,1,3
-diagflat,1,3
-inner,1,3
-interval,1,3
-ma.masked_all,1,3
-ndnarray,1,3
-npy_intp,1,3
-partition,1,3
-random.binomial,1,3
-random.dirichlet,1,3
-typing.ArrayLike,1,3
-PyUFuncGenericFunction,1,2
-compress,1,2
-diag_indices_from,1,2
-fft.ifftshift,1,2
-float64.,1,2
-histogram2d,1,2
-histogramdd,1,2
-int_,1,2
-ma.getmask,1,2
-ma.is_masked,1,2
-ma.masked_invalid,1,2
-ma.nomask,1,2
-ma.nonzero,1,2
-ma.var,1,2
-polyadd,1,2
-random.MT19937,1,2
-random.mtrand._rand,1,2
-rec.recarray,1,2
-require,1,2
-triu_indices_from,1,2
-uint,1,2
-PyUFunc_FromFuncAndData,1,1
-__version__,1,1
-__version__.startswith,1,1
-add.at,1,1
-add.reduceat,1,1
-apply_over_axes,1,1
-argwhere,1,1
-array2string,1,1
-atleast_3d,1,1
-bitwise_and,1,1
-bitwise_or,1,1
-broadcast_shapes,1,1
-digitize,1,1
-divmod,1,1
-double,1,1
-fft,1,1
-fft.ifft,1,1
-fft.rfft,1,1
-fft.rfftfreq,1,1
-fliplr,1,1
-float,1,1
-fmin,1,1
-format_float_scientific,1,1
-fromfile,1,1
-genfromtxt,1,1
-geomspace,1,1
-geterr,1,1
-half,1,1
-int64.,1,1
-intersect1d,1,1
-invert,1,1
-lcm,1,1
-linalg.eigvals,1,1
-linalg.pinv,1,1
-logical_and.reduce,1,1
-logical_or.reduce,1,1
-longlong,1,1
-ma.count,1,1
-ma.getmaskarray,1,1
-ma.masked,1,1
-ma.masked_equal,1,1
-ma.where,1,1
-median.,1,1
-min.,1,1
-minimum.accumulate,1,1
-multiply.reduce,1,1
-nanpercentile,1,1
-nanstd.,1,1
-nansum,1,1
-nanvar,1,1
-nextafter.reduce,1,1
-poly1d.__call__,1,1
-polysub,1,1
-quantile,1,1
-random.PCG64,1,1
-random.lognormal,1,1
-random.rayleigh,1,1
-random.standard_cauchy,1,1
-random.standard_normal,1,1
-record,1,1
-remainder,1,1
-rint,1,1
-savez,1,1
-setdiff1d,1,1
-subtract,1,1
-testing.assert_,1,1
-testing.assert_almost_equal,1,1
-testing.assert_warns,1,1
-tri,1,1
-tril_indices_from,1,1
-ubyte,1,1
-uintp,1,1
+np_call,np_args,num_scipy_funs_used_by,total_np_calls
+array, dtype,119,477
+zeros, dtype,92,308
+asarray, dtype,69,217
+all,,63,175
+arange, dtype,56,134
+empty, dtype,54,204
+ones, dtype,49,110
+sum, axis,46,122
+errstate,invalid,39,81
+concatenate, axis,28,58
+any,,28,39
+errstate,divide,25,57
+array, copy,25,54
+linspace, endpoint,23,73
+linspace, num,22,38
+mean, axis,17,51
+errstate,all,16,42
+linalg.norm, axis,16,27
+zeros_like, dtype,16,24
+where,,14,34
+errstate,over,14,28
+full, dtype,14,23
+eye, dtype,13,33
+errstate, invalid,13,28
+random.randint, size,12,29
+allclose, atol,12,17
+all, ,11,32
+full, fill_value,10,24
+sort, axis,10,17
+max, axis,9,15
+std, ddof,9,12
+sum,,8,25
+abs,,8,14
+zeros, order,8,14
+allclose, rtol,8,10
+nonzero,,8,9
+random.normal,size,7,24
+array, ndmin,7,20
+random.uniform, size,7,11
+argmax, axis,7,9
+full_like, dtype,7,9
+std, axis,7,8
+empty,shape,6,38
+asarray, order,6,21
+ascontiguousarray, dtype,6,19
+diag, k,6,16
+empty_like, dtype,6,16
+random.RandomState,seed,6,12
+any, axis,6,11
+delete, axis,6,10
+errstate, divide,6,9
+argmin, axis,6,7
+linalg.lstsq, rcond,6,7
+logical_and,,5,62
+ma.masked_array, mask,5,25
+ma.array, mask,5,19
+expand_dims, axis,5,13
+roll, axis,5,13
+isclose, atol,5,12
+diff, axis,5,11
+eye, atol,5,11
+take_along_axis, axis,5,11
+average, weights,5,8
+errstate, over,5,8
+searchsorted, side,5,8
+sign,,5,8
+argsort, axis,5,7
+cumsum, axis,5,7
+ones_like, dtype,5,7
+testing.assert_allclose, atol,5,7
+array, order,5,6
+set_printoptions,precision,5,6
+unique, return_counts,5,6
+argsort, kind,5,5
+ndarray,shape,4,24
+abs,axis,4,21
+empty, order,4,12
+isscalar,,4,10
+all,lb ,4,9
+median, axis,4,9
+array, rtol,4,8
+var, axis,4,8
+all,ub ,4,7
+isclose, rtol,4,7
+pad, mode,4,7
+all, axis,4,6
+amax, axis,4,6
+hstack, dtype,4,6
+linalg.norm, keepdims,4,6
+sort, size,4,6
+zeros,shape,4,6
+array,axis,4,5
+linalg.norm, ord,4,5
+unique,,4,5
+unique, axis,4,5
+zeros, size,4,5
+atleast_2d, dtype,4,4
+concatenate, dtype,4,4
+mean, keepdims,4,4
+ndarray, dtype,3,17
+sort,size,3,17
+sqrt, rtol,3,13
+abs, atol,3,10
+ones,shape,3,9
+shape,,3,8
+sum, keepdims,3,8
+var, ddof,3,8
+array, scale,3,7
+abs, axis,3,6
+eye, k,3,6
+frombuffer, dtype,3,6
+isnan,,3,6
+isnan,axis,3,6
+stack, axis,3,6
+zeros_like, atol,3,6
+arange, rtol,3,5
+mean, ddof,3,5
+cumprod, axis,3,4
+linalg.norm, atol,3,4
+linalg.norm, rtol,3,4
+min, axis,3,4
+percentile, axis,3,4
+sign, ,3,4
+sum, atol,3,4
+testing.assert_allclose, rtol,3,4
+unique, return_inverse,3,4
+zeros,dtype,3,4
+apply_along_axis, arr,3,3
+apply_along_axis, axis,3,3
+arange, step,3,3
+around, decimals,3,3
+array, axis,3,3
+diff, append,3,3
+random.choice, size,3,3
+size,,3,3
+size, ,3,3
+sqrt,axis,3,3
+vstack, rtol,3,3
+zeros, axis,3,3
+zeros, default,3,3
+logical_or,,2,26
+sum, rtol,2,19
+meshgrid, indexing,2,15
+random.normal, size,2,10
+array, size,2,9
+atleast_2d, check_finite,2,9
+sqrt, size,2,9
+tril_indices, k,2,9
+random.uniform,size,2,8
+random.random,size,2,7
+shape, ,2,7
+cumsum, out,2,6
+dot, atol,2,6
+log10, color,2,6
+array, decimal,2,5
+can_cast, casting,2,5
+frombuffer, count,2,5
+insert, axis,2,5
+log, decimal,2,5
+real,,2,5
+sum, dtype,2,5
+array, n,2,4
+asarray,axis,2,4
+fromiter, count,2,4
+fromiter, dtype,2,4
+histogram, bins,2,4
+identity, atol,2,4
+linspace,num,2,4
+ones, rtol,2,4
+random.multivariate_normal, size,2,4
+swapaxes, axis,2,4
+testing.assert_allclose,axis,2,4
+abs, rtol,2,3
+abs, shading,2,3
+arange, atol,2,3
+array, loc,2,3
+array, shape,2,3
+dot, axis,2,3
+full_like, fill_value,2,3
+isfinite,,2,3
+isnan, ,2,3
+log, rtol,2,3
+log,axis,2,3
+prod, axis,2,3
+random.exponential,size,2,3
+real, axis,2,3
+round, decimals,2,3
+sqrt, axis,2,3
+tril, k,2,3
+unique, return_index,2,3
+zeros, k,2,3
+all,output ,2,2
+all,state ,2,2
+amin, axis,2,2
+array, k,2,2
+asanyarray, dtype,2,2
+asarray,,2,2
+asarray, axis,2,2
+asarray, method,2,2
+atleast_2d, copy,2,2
+convolve, mode,2,2
+diag,,2,2
+diff,,2,2
+eye, rtol,2,2
+flip, axis,2,2
+full,shape,2,2
+isnan, axis,2,2
+issubdtype,,2,2
+ndarray, buffer,2,2
+nonzero,axis,2,2
+ones, format,2,2
+ones, method,2,2
+put_along_axis, axis,2,2
+repeat, axis,2,2
+set_printoptions, suppress,2,2
+sort, atol,2,2
+sqrt, atol,2,2
+sqrt, ddof,2,2
+sqrt, dtype,2,2
+squeeze, axis,2,2
+sum,axis,2,2
+take, axis,2,2
+triu, dtype,2,2
+triu, k,2,2
+vstack, atol,2,2
+ones, fs,1,23
+ones, hop,1,20
+eye, solver,1,11
+allclose, norm,1,8
+logical_and, k ,1,8
+array, moments,1,7
+log10,,1,7
+zeros, inv_transform,1,7
+arange, label,1,6
+arange, lw,1,6
+logical_and,h ,1,6
+logspace, base,1,6
+zeros, seed,1,6
+empty, axis,1,5
+isfinite, b,1,5
+log10, analog,1,5
+log10, atol,1,5
+tril_indices, ,1,5
+zeros,,1,5
+zeros, if p ,1,5
+all,bsh ,1,4
+array, dt,1,4
+array, floc,1,4
+ascontiguousarray,dtype,1,4
+delete,,1,4
+delete, 0 if which ,1,4
+exp, axis,1,4
+frombuffer, offset,1,4
+isnan, fisher,1,4
+linalg.norm,,1,4
+log, err_msg,1,4
+ones, fft_mode,1,4
+rec.fromarrays, names,1,4
+union1d, key,1,4
+zeros,axis,1,4
+all,res.status ,1,3
+amax, keepdims,1,3
+arange,format,1,3
+broadcast_to, copy,1,3
+clip, a_max,1,3
+clip, a_min,1,3
+clip, copy,1,3
+dtype, check_contents,1,3
+exp, b,1,3
+exp, rtol,1,3
+exp,format,1,3
+eye, maxiter,1,3
+fft.fftfreq, d,1,3
+finfo, rtol,1,3
+isnan, res.nfev ,1,3
+isscalar, exact,1,3
+ma.array, dtype,1,3
+ma.masked_where,,1,3
+ma.masked_where, copy,1,3
+max, decimal,1,3
+ndarray,dtype,1,3
+ones, scale_to,1,3
+ones,axis,1,3
+printoptions,precision,1,3
+random.binomial, size,1,3
+random.dirichlet, size,1,3
+zeros, constraints,1,3
+abs, high,1,2
+abs, size,1,2
+abs, vmax,1,2
+abs, vmin,1,2
+abs,low,1,2
+add, dtype,1,2
+add, out,1,2
+all, nu,1,2
+all,.imag ,1,2
+all,_mwu_state._fmnks ,1,2
+all,axis,1,2
+allclose, axis,1,2
+angle, color,1,2
+any,new_shapes ,1,2
+arange,axis,1,2
+argmax,,1,2
+array, f0,1,2
+array, fscale,1,2
+array, limit,1,2
+array,loc,1,2
+atleast_1d,axis,1,2
+bitwise_or,,1,2
+correlate, mode,1,2
+cos, c,1,2
+cos, s,1,2
+count_nonzero,,1,2
+cov, bias,1,2
+cov, rowvar,1,2
+diagonal, offset,1,2
+diff, prepend,1,2
+dtype,,1,2
+einsum, ,1,2
+empty, mask,1,2
+exp,,1,2
+exp, lower_limit,1,2
+exp,axis,1,2
+eye, fix_cov,1,2
+eye, ncv,1,2
+eye, tol,1,2
+fft.fft, axis,1,2
+fft.fftshift, axes,1,2
+full, decimal,1,2
+histogram2d, bins,1,2
+histogramdd, bins,1,2
+hstack,order,1,2
+identity, dtype,1,2
+identity, rtol,1,2
+iscomplexobj, dtype,1,2
+isinf, ,1,2
+isnan, bias,1,2
+isnan, keepdims,1,2
+isscalar, size,1,2
+isscalar,axis,1,2
+linalg.cond, p,1,2
+linspace, dtype,1,2
+linspace, order,1,2
+log, axis,1,2
+logspace, endpoint,1,2
+ma.nonzero,,1,2
+matmul, out,1,2
+max, significant,1,2
+multiply, dtype,1,2
+ndim,,1,2
+ndim, ,1,2
+nextafter, where,1,2
+ones, blocksize,1,2
+ones, cond,1,2
+ones, driver,1,2
+ones, index,1,2
+ones, nperseg,1,2
+ones, rcond,1,2
+ones, worN,1,2
+ones, zi,1,2
+pad, constant_values,1,2
+percentile, atol,1,2
+prod,axis,1,2
+ptp, axis,1,2
+random.binomial, p,1,2
+random.normal, scale,1,2
+random.normal,loc,1,2
+random.pareto, size,1,2
+random.randn, leafsize,1,2
+random.randn, mask,1,2
+random.random_sample,size,1,2
+sort, high,1,2
+sort, kind,1,2
+sort, tail,1,2
+sort,low,1,2
+sqrt, nobs2,1,2
+sqrt,size,1,2
+std,,1,2
+std, atol,1,2
+sum,d ,1,2
+sum,dim,1,2
+swapaxes, ord,1,2
+swapaxes, padlen,1,2
+tile, dtype,1,2
+tril, assume_a,1,2
+tril, transposed,1,2
+unique, ,1,2
+unwrap, color,1,2
+vander, increasing,1,2
+vectorize, excluded,1,2
+vstack,,1,2
+vstack, repeat,1,2
+zeros, detr,1,2
+zeros, k1,1,2
+zeros, random_state,1,2
+zeros, rtol,1,2
+zeros, scale,1,2
+zeros_like, decimal,1,2
+abs, ,1,1
+abs, cmap,1,1
+abs, color,1,1
+abs, linestyle,1,1
+absolute, cmap,1,1
+add.reduce, axis,1,1
+add.reduceat, dtype,1,1
+all, msg,1,1
+all,_memoized_func.last_params ,1,1
+all,arr ,1,1
+all,c ,1,1
+all,c2 ,1,1
+all,delta_grad ,1,1
+all,delta_x ,1,1
+all,den ,1,1
+all,g0 ,1,1
+all,gap_diffs ,1,1
+all,h0 ,1,1
+all,jac.last_p ,1,1
+all,line.last_p ,1,1
+all,ps ,1,1
+all,r ,1,1
+all,r2 ,1,1
+all,res.fun ,1,1
+all,res.nfev ,1,1
+all,res.nit ,1,1
+all,rowA ,1,1
+all,s.array1d ,1,1
+all,s.array2d ,1,1
+all,s.array3d ,1,1
+all,s.array4d ,1,1
+all,s.array5d ,1,1
+all,s.array6d ,1,1
+all,s.array7d ,1,1
+all,s.array8d ,1,1
+all,scale ,1,1
+all,x ,1,1
+all,xt_yeo_int ,1,1
+amax,,1,1
+amax, ,1,1
+angle, cmap,1,1
+any, ,1,1
+any,a ,1,1
+any,abs_diag ,1,1
+any,axis,1,1
+any,b ,1,1
+any,denom ,1,1
+any,distances ,1,1
+any,meanshape ,1,1
+any,n ,1,1
+any,sample ,1,1
+append, axis,1,1
+apply_along_axis, ddof,1,1
+apply_over_axes,,1,1
+arange,,1,1
+arange, ,1,1
+arange, distance,1,1
+arange, if k ,1,1
+arange, order,1,1
+arange, scale,1,1
+arange, shape,1,1
+arange, wlen,1,1
+arange, xp,1,1
+argmax, keepdims,1,1
+argmin, keepdims,1,1
+argsort, copy,1,1
+argwhere,,1,1
+argwhere, ,1,1
+array,,1,1
+array, atol,1,1
+array, axes,1,1
+array, fs,1,1
+array, hop,1,1
+array, padding,1,1
+array, repeat,1,1
+array, restrt,1,1
+array2string, precision,1,1
+asanyarray, axis,1,1
+asarray, atol,1,1
+asarray, ddof,1,1
+asarray, elements,1,1
+asarray, err_msg,1,1
+asarray, mest,1,1
+asarray, moments,1,1
+asarray, nan_policy,1,1
+asarray, x,1,1
+asarray,.size ,1,1
+asfortranarray, dtype,1,1
+atleast_2d, metric,1,1
+atleast_3d, a,1,1
+average,,1,1
+average, axis,1,1
+bincount,,1,1
+bincount, copy,1,1
+bincount, dtype,1,1
+bitwise_and,,1,1
+broadcast_arrays, rtol,1,1
+broadcast_to,,1,1
+broadcast_to, axis,1,1
+broadcast_to, dtype,1,1
+broadcast_to, if x.ndim ,1,1
+broadcast_to, order,1,1
+broadcast_to, subok,1,1
+choose,,1,1
+choose,sa ,1,1
+clip, out,1,1
+concatenate,,1,1
+concatenate, batch,1,1
+concatenate, rtol,1,1
+conj, key,1,1
+corrcoef, rowvar,1,1
+cos, fc,1,1
+cos, x,1,1
+cos,endpoint,1,1
+cos,size,1,1
+count_nonzero, axis,1,1
+cov, rtol,1,1
+cumsum, dtype,1,1
+cumsum,axis,1,1
+diag, ,1,1
+diag, atol,1,1
+diag, rtol,1,1
+diag,axis,1,1
+diag_indices, ,1,1
+dot,,1,1
+dot, err_msg,1,1
+dstack, c22.shape ,1,1
+dstack, has shape ,1,1
+dstack, x.shape ,1,1
+dtype, align,1,1
+dtype, maxval,1,1
+empty, gpower ,1,1
+empty, onem2gpower ,1,1
+empty, twogpower ,1,1
+empty, v_ineq,1,1
+empty,dtype,1,1
+exp, atol,1,1
+exp, complement of xj ,1,1
+exp, dtype,1,1
+exp, dx,1,1
+exp, out,1,1
+exp, random_state,1,1
+exp, size,1,1
+expand_dims, atol,1,1
+extract,,1,1
+eye, df,1,1
+eye, fix_mean,1,1
+eye, form,1,1
+eye, order,1,1
+eye, pivoting,1,1
+eye, return_singular_vectors,1,1
+eye, which,1,1
+fabs, rtol,1,1
+fft.ifft, axis,1,1
+fft.ifftshift, axes,1,1
+fft.rfftfreq, d,1,1
+flip, fs,1,1
+flip, hop,1,1
+float64,,1,1
+format_float_scientific, pad_left,1,1
+format_float_scientific, precision,1,1
+format_float_scientific, unique,1,1
+fromfile, count,1,1
+fromfile, dtype,1,1
+fromstring, dtype,1,1
+fromstring, sep,1,1
+full, alpha,1,1
+full_like,axis,1,1
+histogram, weights,1,1
+histogram2d, weights,1,1
+histogramdd, weights,1,1
+hstack, err_msg,1,1
+hstack, num,1,1
+identity, k,1,1
+imag,,1,1
+imag, ,1,1
+insert,,1,1
+insert, 0 if which ,1,1
+int32, whole,1,1
+intersect1d, return_indices,1,1
+intp,,1,1
+intp, and mmwrite ,1,1
+isfinite,axis,1,1
+isfinite,wl ,1,1
+isfinite,wr ,1,1
+isinf,,1,1
+isinf,a ,1,1
+isinf,axis,1,1
+isinf,m2,1,1
+isnan, err_msg,1,1
+isnan, exact,1,1
+isnan, extrapolate,1,1
+isnan, high,1,1
+isnan, nan_policy,1,1
+isscalar, and x.ndim ,1,1
+isscalar, and x.shape ,1,1
+kron, k,1,1
+lib.stride_tricks.as_strided, shape,1,1
+lib.stride_tricks.as_strided, strides,1,1
+linalg.inv, decimal,1,1
+linalg.matrix_rank,,1,1
+linalg.matrix_rank, ,1,1
+linalg.qr, mode,1,1
+linalg.solve, atol,1,1
+linalg.svd, compute_uv,1,1
+linalg.svd, full_matrices,1,1
+linalg.svd,size,1,1
+linspace, retstep,1,1
+linspace, weights,1,1
+load, allow_pickle,1,1
+loadtxt, skiprows,1,1
+log,,1,1
+log, ddof,1,1
+log, dtype,1,1
+log, k,1,1
+log, mu,1,1
+log, n,1,1
+log, out,1,1
+log, p,1,1
+log, size,1,1
+log,size,1,1
+log10, linestyle,1,1
+log10, ls,1,1
+log10, weights,1,1
+log1p, rtol,1,1
+logical_and, loc ,1,1
+logspace, num,1,1
+ma.asarray, dtype,1,1
+ma.nonzero,ma ,1,1
+ma.nonzero,q ,1,1
+ma.var, axis,1,1
+ma.var, ddof,1,1
+matmul, atol,1,1
+max,,1,1
+maximum, dtype,1,1
+maximum, linewidth,1,1
+mean, rtol,1,1
+mean, scale,1,1
+mean,axis,1,1
+meshgrid, sparse,1,1
+min, decimal,1,1
+minimum, axis,1,1
+minimum.accumulate, axis,1,1
+minimum.accumulate, out,1,1
+moveaxis,,1,1
+moveaxis, axis,1,1
+moveaxis, x.shape ,1,1
+nanmax, axis,1,1
+nanmin, axis,1,1
+ndarray, order,1,1
+nextafter, dtype,1,1
+nonzero, ,1,1
+nonzero, 1 ,1,1
+nonzero, axis,1,1
+nonzero, initial,1,1
+nonzero,h ,1,1
+nonzero,i ,1,1
+nonzero,self.offsets ,1,1
+nonzero,x ,1,1
+ones,,1,1
+ones, 6 ,1,1
+ones, axis,1,1
+ones, b,1,1
+ones, dual_win,1,1
+ones, err_msg,1,1
+ones, include_nyquist,1,1
+ones, k,1,1
+ones, mode,1,1
+ones, n_fft,1,1
+ones, nfft,1,1
+ones, offsets,1,1
+ones, order,1,1
+ones, random_state,1,1
+ones, scaling,1,1
+ones, solver,1,1
+ones, x0,1,1
+ones,dtype,1,1
+percentile, q,1,1
+percentile,a,1,1
+place,,1,1
+place,axis,1,1
+power,axis,1,1
+prod,,1,1
+ptp,,1,1
+ptp, rtol,1,1
+put_along_axis, values,1,1
+random.RandomState, size,1,1
+random.default_rng, vectorized,1,1
+random.exponential, size,1,1
+random.lognormal,size,1,1
+random.normal, loc,1,1
+random.randint,,1,1
+random.randint, ,1,1
+random.random, blocksize,1,1
+random.uniform, high,1,1
+random.uniform,low,1,1
+ravel,,1,1
+ravel, ,1,1
+ravel_multi_index, order,1,1
+real,dtype,1,1
+rec.recarray, dtype,1,1
+resize, mask,1,1
+rint, out,1,1
+round, dtype,1,1
+set_printoptions,suppress,1,1
+setdiff1d, assume_unique,1,1
+seterr, invalid,1,1
+seterr,divide,1,1
+seterr,invalid,1,1
+sign,rat ,1,1
+sign,size,1,1
+signbit,,1,1
+signbit, ,1,1
+sin, label,1,1
+sin, size,1,1
+sin,scale,1,1
+sort, decimal,1,1
+sort, order,1,1
+spacing, rtol,1,1
+split, axis,1,1
+sqrt,,1,1
+sqrt, decimal,1,1
+sqrt, out,1,1
+sqrt, random_state,1,1
+sqrt, weights,1,1
+sqrt,1. if j ,1,1
+square,axis,1,1
+squeeze, f_AB,1,1
+squeeze, f_B,1,1
+squeeze, label,1,1
+squeeze, where,1,1
+squeeze,f_A,1,1
+std, keepdims,1,1
+sum, ,1,1
+sum, ddof,1,1
+sum,hs.intersections ,1,1
+sum,x ,1,1
+sum,y ,1,1
+swapaxes, caxis,1,1
+take_along_axis, ndmin,1,1
+tensordot, axes,1,1
+testing.assert_array_equal, err_msg,1,1
+testing.assert_equal, err_msg,1,1
+tril, dtype,1,1
+tril,k,1,1
+tril_indices_from, k,1,1
+triu,,1,1
+triu, ,1,1
+triu, rtol,1,1
+triu,k,1,1
+true_divide,,1,1
+true_divide, out,1,1
+true_divide, where,1,1
+unravel_index, order,1,1
+unwrap, axis,1,1
+vander, N,1,1
+var, copy,1,1
+var, rtol,1,1
+vstack, shape ,1,1
+vstack,x ,1,1
+where, ,1,1
+where, atol,1,1
+where,a ,1,1
+where,data ,1,1
+where,k ,1,1
+where,n1 ,1,1
+where,n2 ,1,1
+where,s ,1,1
+where,y ,1,1
+zeros, args,1,1
+zeros, atol,1,1
+zeros, cov,1,1
+zeros, eigvals,1,1
+zeros, equal_var,1,1
+zeros, f_axis,1,1
+zeros, k0,1,1
+zeros, k_off,1,1
+zeros, method,1,1
+zeros, p0,1,1
+zeros, p1,1,1
+zeros, padding,1,1
+zeros, shape,1,1
+zeros, side,1,1
+zeros, t_axis,1,1
+zeros, turbo,1,1
+zeros, zi,1,1
+zeros,size,1,1
+zeros_like, color,1,1
