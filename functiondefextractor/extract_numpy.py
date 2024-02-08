@@ -10,19 +10,19 @@ import pandas as pd
 
 if __name__ == '__main__':
 
+    out_dir = "/home/amandapotts/git/functiondefextractor/data/scipy/"
     scipy_path = "/home/amandapotts/git/scipy/scipy"
-    print(scipy_path)
 
     #   Extract the function calls, and enhance with extracted function names.
     df = extractor(scipy_path)
 
-    df['np_calls'] = df['Code'].str.findall(r"np\.([\w\.]*)")
+    df['np_calls'] = df['Code'].str.findall(r"np\.([\w\._]*)")
     df['num_np_calls'] = df['np_calls'].apply(lambda x: len(x))
-    df['np_calls_w_args'] = df['Code'].str.findall(r"np\.([\w_\.]+\(.*\))")
+    df['np_calls_w_args'] = df['Code'].str.findall(r"np\.([\w\_\.]+\(.*\))")
     df['scipy_function'] = df['Uniq ID'].str.findall(r"/home/amandapotts/git/scipy/scipy/([\w_/]*)")
     df = df.explode('scipy_function')
 
-    my_out = "/home/amandapotts/git/functiondefextractor/data/scipy/scipy_function_definitions.csv"
+    my_out = out_dir + "scipy_function_definitions.csv"
     df.to_csv(my_out)
 
     # Compute the number of numpy calls, over all, and by number of scipy functions.
@@ -39,15 +39,14 @@ if __name__ == '__main__':
     df_call_stats = df_num_scipy_funs_used.join(df_total_np_calls, lsuffix='_caller', rsuffix='_other')
     df_call_stats = df_call_stats.sort_values(by=['num_scipy_funs_used_by', 'total_np_calls'], ascending=False)
 
-    my_out2 = "/home/amandapotts/git/functiondefextractor/data/scipy/np_call_stats.csv"
+    my_out2 = out_dir + "np_call_stats.csv"
     df_call_stats.to_csv(my_out2)
-
 
     df_args = df.explode('np_calls_w_args')
     df_args = df_args[df_args['np_calls_w_args'].notnull()][["scipy_function", "np_calls_w_args"]]
     df_args['np_call'] = df_args['np_calls_w_args'].str.findall(r"(^[\w\.]*)")
     df_args = df_args.explode('np_call')
-    df_args['np_args'] = df_args['np_calls_w_args'].str.findall(r"([\w\._]*)\s*=")
+    df_args['np_args'] = df_args['np_calls_w_args'].str.findall(r"([\w\._]*)\s*=[^=<>!]")
     df_args = df_args.explode('np_args')
     df_args = df_args[df_args['np_args'].notnull()]
     df_args = df_args[["scipy_function", "np_call", "np_args"]]
@@ -61,6 +60,5 @@ if __name__ == '__main__':
     df_call_stats = df_num_scipy_funs_used.join(df_total_np_calls, lsuffix='_caller', rsuffix='_other')
     df_call_stats = df_call_stats.sort_values(by=['num_scipy_funs_used_by', 'total_np_calls'], ascending=False)
 
-
-    my_out3 = "/home/amandapotts/git/functiondefextractor/data/scipy/np_arg_stats.csv"
+    my_out3 = out_dir + "np_arg_stats.csv"
     df_call_stats.to_csv(my_out3)
