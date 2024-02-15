@@ -1,0 +1,11 @@
+np_call,np_args,num_arkouda_funs_used_by,total_np_calls
+bool_,as_component,3,4
+array,dtype,2,3
+cumsum,linestyle,1,1
+cumsum,marker,1,1
+dtype,,1,1
+empty,dtype,1,1
+random.choice,size,1,1
+random.uniform,high,1,1
+random.uniform,low,1,1
+random.uniform,size,1,1
