@@ -16,6 +16,7 @@ def add_numpy_calls(df):
 def add_library_functions(df: pd.DataFrame, lib_name: str, lib_path: str):
     df[lib_name + "_function"] = df["Uniq ID"].str.findall(lib_path + "([\w_/\.]*)")
     df = df.explode(lib_name + "_function")
+    df[lib_name + "_function"] = df[lib_name + "_function"].str.replace("(\.$)", "")
     return df
 
 
@@ -33,35 +34,26 @@ def get_numpy_calls_stats(df, lib_name: str, out_dir: str):
     df_np_calls = df_np_calls[df_np_calls["np_calls"].notnull()]
     df_np_calls = df_np_calls.explode("np_calls")
 
-    # df_np_calls["function_np"] = df_np_calls["np_calls"]
     df_np_calls = df_np_calls.rename(columns={"np_calls": "function_np"})
+    df_np_calls["function_np"] = df_np_calls["function_np"].str.replace("(\.$)", "")
 
-    # total_np_calls = df_np_calls.groupby("function_np").size()
-    # df_total_np_calls = pd.DataFrame({"total_np_calls": total_np_calls})
-    #
-    # num_scipy_funs_used = df_np_calls.groupby("function_np").nunique()
-    # df_num_scipy_funs_used = pd.DataFrame({"num_" + lib_name + "_funs_used_by": num_scipy_funs_used})
-    #
-    # df_call_stats = df_num_scipy_funs_used.join(
-    #     df_total_np_calls, on="function_np", lsuffix="_num_funcs", rsuffix="_total"
-    # )
-
-    df_call_stats = df_np_calls.groupby(["function_np"]).agg(["count", "nunique"])
-    df_call_stats = df_call_stats.rename(
-        columns={"count": "total_np_calls", "nunique": "num_" + lib_name + "_funs_used_by"}
+    df_call_stats = (
+        df_np_calls.groupby(["function_np"])
+        .agg(["count", "nunique"])
+        .rename(columns={"count": "total_np_calls", "nunique": "num_" + lib_name + "_funs_used_by"})
     )
 
-    print(df_call_stats.columns)
-    print(df_call_stats)
-    print(type(df_call_stats))
+    df_call_stats.columns = df_call_stats.columns.get_level_values(1)
 
     df_call_stats = df_call_stats.sort_values(
         by=[
-            ("arkouda_function", "num_" + lib_name + "_funs_used_by"),
-            ("arkouda_function", "total_np_calls"),
+            "num_" + lib_name + "_funs_used_by",
+            "total_np_calls",
         ],
         ascending=False,
     )
+
+    df_call_stats = df_call_stats.reset_index(col_fill=["function_np", "np_arg"])
 
     my_out = out_dir + lib_name + "_np_call_stats.csv"
     df_call_stats.to_csv(my_out)
@@ -78,18 +70,21 @@ def get_numpy_arg_stats(df: pd.DataFrame, lib_name: str, out_dir: str):
     df_args = df_args[df_args["np_args"].notnull()]
     df_args = df_args[[lib_name + "_function", "np_call", "np_args"]]
 
-    total_np_calls = df_args.groupby(["np_call", "np_args"]).size()
-    df_total_np_calls = pd.DataFrame({"total_np_calls": total_np_calls})
-
-    num_scipy_funs_used = df_args.drop_duplicates().groupby(["np_call", "np_args"]).size()
-    df_num_scipy_funs_used = pd.DataFrame({"num_" + lib_name + "_funs_used_by": num_scipy_funs_used})
-
-    df_call_stats = df_num_scipy_funs_used.join(
-        df_total_np_calls, on=["np_call", "np_args"], lsuffix="_num_funcs", rsuffix="_total"
+    df_call_stats = (
+        df_args.groupby(["np_call", "np_args"])
+        .agg(["count", "nunique"])
+        .rename(columns={"count": "total_np_calls", "nunique": "num_" + lib_name + "_funs_used_by"})
     )
+    df_call_stats.columns = df_call_stats.columns.get_level_values(1)
+
     df_call_stats = df_call_stats.sort_values(
-        by=["num_" + lib_name + "_funs_used_by", "total_np_calls"], ascending=False
+        by=[
+            "num_" + lib_name + "_funs_used_by",
+            "total_np_calls",
+        ],
+        ascending=False,
     )
+    df_call_stats = df_call_stats.reset_index(col_fill=["function_np", "np_arg"])
 
     my_out = out_dir + lib_name + "_np_arg_stats.csv"
     df_call_stats.to_csv(my_out)
