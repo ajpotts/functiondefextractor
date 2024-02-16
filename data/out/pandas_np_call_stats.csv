@@ -1,4 +1,4 @@
-np_calls,num_pandas_funs_used_by,total_np_calls
+function_np,num_pandas_funs_used_by,total_np_calls
 nan,1999,5318
 array,1814,3611
 random.default_rng,1383,1923

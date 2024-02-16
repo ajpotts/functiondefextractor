@@ -1,8 +1,8 @@
-import pandas as pd
-from core_extractor import extractor, get_report
-import re
 import os
 import re
+
+import pandas as pd
+from core_extractor import extractor, get_report
 
 
 def add_numpy_calls(df):
@@ -33,17 +33,34 @@ def get_numpy_calls_stats(df, lib_name: str, out_dir: str):
     df_np_calls = df_np_calls[df_np_calls["np_calls"].notnull()]
     df_np_calls = df_np_calls.explode("np_calls")
 
-    total_np_calls = df_np_calls.groupby("np_calls").size()
-    df_total_np_calls = pd.DataFrame({"total_np_calls": total_np_calls})
+    # df_np_calls["function_np"] = df_np_calls["np_calls"]
+    df_np_calls = df_np_calls.rename(columns={"np_calls": "function_np"})
 
-    num_scipy_funs_used = df_np_calls.drop_duplicates().groupby("np_calls").size()
-    df_num_scipy_funs_used = pd.DataFrame({"num_" + lib_name + "_funs_used_by": num_scipy_funs_used})
+    # total_np_calls = df_np_calls.groupby("function_np").size()
+    # df_total_np_calls = pd.DataFrame({"total_np_calls": total_np_calls})
+    #
+    # num_scipy_funs_used = df_np_calls.groupby("function_np").nunique()
+    # df_num_scipy_funs_used = pd.DataFrame({"num_" + lib_name + "_funs_used_by": num_scipy_funs_used})
+    #
+    # df_call_stats = df_num_scipy_funs_used.join(
+    #     df_total_np_calls, on="function_np", lsuffix="_num_funcs", rsuffix="_total"
+    # )
 
-    df_call_stats = df_num_scipy_funs_used.join(
-        df_total_np_calls, lsuffix="_num_functs", rsuffix="_total"
+    df_call_stats = df_np_calls.groupby(["function_np"]).agg(["count", "nunique"])
+    df_call_stats = df_call_stats.rename(
+        columns={"count": "total_np_calls", "nunique": "num_" + lib_name + "_funs_used_by"}
     )
+
+    print(df_call_stats.columns)
+    print(df_call_stats)
+    print(type(df_call_stats))
+
     df_call_stats = df_call_stats.sort_values(
-        by=["num_" + lib_name + "_funs_used_by", "total_np_calls"], ascending=False
+        by=[
+            ("arkouda_function", "num_" + lib_name + "_funs_used_by"),
+            ("arkouda_function", "total_np_calls"),
+        ],
+        ascending=False,
     )
 
     my_out = out_dir + lib_name + "_np_call_stats.csv"
@@ -67,7 +84,9 @@ def get_numpy_arg_stats(df: pd.DataFrame, lib_name: str, out_dir: str):
     num_scipy_funs_used = df_args.drop_duplicates().groupby(["np_call", "np_args"]).size()
     df_num_scipy_funs_used = pd.DataFrame({"num_" + lib_name + "_funs_used_by": num_scipy_funs_used})
 
-    df_call_stats = df_num_scipy_funs_used.join(df_total_np_calls, lsuffix="_caller", rsuffix="_other")
+    df_call_stats = df_num_scipy_funs_used.join(
+        df_total_np_calls, on=["np_call", "np_args"], lsuffix="_num_funcs", rsuffix="_total"
+    )
     df_call_stats = df_call_stats.sort_values(
         by=["num_" + lib_name + "_funs_used_by", "total_np_calls"], ascending=False
     )
@@ -95,12 +114,15 @@ def run_stats(lib_name: str, lib_path: str, out_dir: str):
     return df, df_call_stats, df_args
 
 
-def enhance_api():
+def enhance_numpy_api():
     df = pd.read_csv(np_api_sheet, names=["np"], header=None)
-    print(df)
     df["np"] = df["np"].str.strip()
-    df["np_function"] = df["np"].str.extract(r"numpy\.([\w\._]*)", expand=True)
-    df["api_link"] = "https://numpy.org/doc/stable/reference/generated/" + df["np"].astype(str) + ".html"
+
+    df["function"] = df["np"].str.extract(r"numpy\.([\w\._]*)", expand=True).astype(str)
+    df["function_name"] = df["np"].str.extract(r"([\w_]*$)", expand=True).astype(str)
+    df["numpy_api_link"] = (
+        "https://numpy.org/doc/stable/reference/generated/" + df["np"].astype(str) + ".html"
+    )
     my_out = out_dir + "numpy_api_enhanced.csv"
     df.to_csv(my_out)
     return df
@@ -117,26 +139,50 @@ def extract_api(filename):
 def get_arkouda_api_from_docs(rootdir: str):
     regex = re.compile("(.*index.html)")
 
-    api_list = list()
+    api_list = []
     for root, dirs, files in os.walk(rootdir):
         if len(dirs) > 0:
             for dir in dirs:
                 api = extract_api(root + "/" + dir + "/index.html")
-                api_list.append(api)
+                api_list.extend(api)
         else:
             api = extract_api(root + "/index.html")
-            api_list.append(api)
+            api_list.extend(api)
     return api_list
 
 
-def get_arkouda_api_df_from_docs(rootdir: str, out_dir:str):
+def get_arkouda_api_df_from_docs(rootdir: str, out_dir: str):
     api_list = get_arkouda_api_from_docs(rootdir)
     df = pd.DataFrame()
     df["ak"] = api_list
+    df["ak"] = df["ak"].str.strip()
+    df = df.drop_duplicates()
+    df["function"] = df["ak"].str.extract(r"arkouda\.([\w\._]*)", expand=True).astype(str)
+    df["function_name"] = df["ak"].str.extract(r"([\w_]*$)", expand=True).astype(str)
+    df[
+        "arkouda_api_link"
+    ] = "file:///home/amandapotts/git/arkouda/docs/autoapi/arkouda/alignment/index.html#" + df[
+        "ak"
+    ].astype(
+        str
+    )
+    df = df.reset_index()
     my_out = out_dir + "arkouda_api_enhanced.csv"
     df.to_csv(my_out)
     return df
 
+
+def generate_api_comparision(np_df, ak_df):
+    api_comparison = np_df.merge(
+        ak_df, on=["function_name"], how="outer", suffixes=("_np", "_ak")
+    ).reset_index()
+    api_comparison = api_comparison[
+        ["function_name", "np", "function_np", "numpy_api_link", "ak", "function_ak", "arkouda_api_link"]
+    ]
+
+    my_out = out_dir + "np_ak_api_comparison.csv"
+    api_comparison.to_csv(my_out)
+    return api_comparison
 
 
 if __name__ == "__main__":
@@ -146,37 +192,23 @@ if __name__ == "__main__":
     arkouda_path = "/home/amandapotts/git/arkouda/arkouda"
 
     np_api_sheet = "/home/amandapotts/git/functiondefextractor/data/numpy_api/np.csv"
+    arkouda_docs_path = "/home/amandapotts/git/arkouda/docs/autoapi/arkouda/"
 
-    # run_stats("arkouda", arkouda_path, out_dir)
-    # df, df_call_stats, df_args = run_stats("scipy", scipy_path, out_dir)
-    # run_stats("pandas", pandas_path, out_dir)
+    np_df = enhance_numpy_api()
+    ak_df = get_arkouda_api_df_from_docs(arkouda_docs_path, out_dir)
+    api_comparison = generate_api_comparision(np_df, ak_df)
 
-    df_numpy_api = enhance_api()
+    arkouda_df, arkouda_df_call_stats, arkouda_df_args = run_stats("arkouda", arkouda_path, out_dir)
+    scipy_df, scipy_df_call_stats, scipy_df_args = run_stats("scipy", scipy_path, out_dir)
+    pandas_df, pandas_df_call_stats, pandas_df_args = run_stats("pandas", pandas_path, out_dir)
 
-    rootdir = "/home/amandapotts/git/arkouda/docs/autoapi/arkouda/"
-    api_list = get_arkouda_api_from_docs(rootdir)
-    print(api_list)
+    # api_comparison_to_merge = api_comparison
+    # api_comparison_to_merge
+    # api_comparison_to_merge["ak"] =
+    print(scipy_df_call_stats.columns)
+    scipy_df_call_stats["function_np"] = scipy_df_call_stats["function_np"].astype(str)
+    api_comparison["function_np"] = api_comparison["function_np"].astype(str)
+    test = scipy_df_call_stats.merge(api_comparison, on=["function_np"], how="outer").reset_index()
 
-    get_arkouda_api_df_from_docs(rootdir, out_dir)
-
-    # df_test = df_call_stats.join(df_numpy_api, lsuffix="_num_functs", rsuffix="_total")
-    #
-    # my_out = out_dir + "test.csv"
-    # df_test.to_csv(my_out)
-
-# df = pd.DataFrame(columns=["Object", "Points", "Length"])
-# with open('textfile.txt', 'r') as input, open('new_textfile.txt', 'w') as output:
-#     for line in input:
-#         if "OBJECT" in line.strip():
-#             object_num = int(line.strip()[7:])
-#
-#         if "CONTOUR" in line.strip():
-#             index_points = line.split(" ").index("points") - 1
-#             index_length = line.split(" ").index("length") + 2
-#             df.loc[len(df)] = {"Object": object_num, "Points": int(line.split(" ")[index_points]),
-#                                "Length": "{:.2E}".format(float(line.split(" ")[index_length]))}
-#
-# input.close()
-# output.close()
-#
-# print(df)
+    my_out = out_dir + "test.csv"
+    test.to_csv(my_out)

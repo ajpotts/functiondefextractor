@@ -1,4 +1,4 @@
-np_calls,num_scipy_funs_used_by,total_np_calls
+function_np,num_scipy_funs_used_by,total_np_calls
 array,2052,4261
 arange,836,1265
 zeros,702,1065
