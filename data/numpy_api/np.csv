@@ -1376,3 +1376,10 @@ numpy.zeros
 numpy.zeros_like  
 random.weibull
 numpy.ndarray.ndim
+numpy.random.Generator
+numpy.signedinteger
+numpy.apply_along_axis  
+numpy.apply_over_axes  
+numpy.vectorize  
+numpy.frompyfunc  
+numpy.piecewise  

@@ -32,10 +32,11 @@ def get_and_write_np_stats(lib_name: str, lib_path: str, out_dir: str):
 def get_numpy_calls_stats(df, lib_name: str, out_dir: str):
     df_np_calls = df.explode("np_calls")[[lib_name + "_function", "np_calls"]]
     df_np_calls = df_np_calls[df_np_calls["np_calls"].notnull()]
+    df_np_calls[lib_name + "_function"] = df_np_calls[lib_name + "_function"].str.rstrip(r"\.")
     df_np_calls = df_np_calls.explode("np_calls")
 
     df_np_calls = df_np_calls.rename(columns={"np_calls": "function_np"})
-    df_np_calls["function_np"] = df_np_calls["function_np"].str.replace("(\.$)", "")
+    df_np_calls["function_np"] = df_np_calls["function_np"].str.rstrip(r"\.")
 
     df_call_stats = (
         df_np_calls.groupby(["function_np"])
@@ -174,10 +175,23 @@ def generate_api_comparision(np_df, ak_df):
     api_comparison = api_comparison[
         ["function_name", "np", "function_np", "numpy_api_link", "ak", "function_ak", "arkouda_api_link"]
     ]
+    api_comparison["ak_coverage"] = api_comparison["function_ak"].notnull()
 
     my_out = out_dir + "np_ak_api_comparison.csv"
     api_comparison.to_csv(my_out)
     return api_comparison
+
+
+def merge_arkoua_api_onto(libname: str, df_call_stats: pd.DataFrame, api_comparison: pd.DataFrame):
+    df_call_stats["function_np"] = df_call_stats["function_np"].astype(str)
+    api_comparison["function_np"] = api_comparison["function_np"].astype(str)
+    merged_df = df_call_stats.merge(api_comparison, on=["function_np"], how="outer")
+    merged_df = merged_df[(merged_df["function_np"] != "nan") | (merged_df["function_name"] == "nan")]
+    merged_df = merged_df.reset_index()
+
+    my_out = out_dir + libname + "_api_comparison.csv"
+    merged_df.to_csv(my_out)
+    return merged_df
 
 
 if __name__ == "__main__":
@@ -197,13 +211,10 @@ if __name__ == "__main__":
     scipy_df, scipy_df_call_stats, scipy_df_args = run_stats("scipy", scipy_path, out_dir)
     pandas_df, pandas_df_call_stats, pandas_df_args = run_stats("pandas", pandas_path, out_dir)
 
-    # api_comparison_to_merge = api_comparison
-    # api_comparison_to_merge
-    # api_comparison_to_merge["ak"] =
-    print(scipy_df_call_stats.columns)
-    scipy_df_call_stats["function_np"] = scipy_df_call_stats["function_np"].astype(str)
-    api_comparison["function_np"] = api_comparison["function_np"].astype(str)
-    test = scipy_df_call_stats.merge(api_comparison, on=["function_np"], how="outer").reset_index()
+    scipy_api_comparison = merge_arkoua_api_onto("scipy", scipy_df_call_stats, api_comparison)
+    pandas_api_comparison = merge_arkoua_api_onto("pandas", pandas_df_call_stats, api_comparison)
 
-    my_out = out_dir + "test.csv"
-    test.to_csv(my_out)
+    test = scipy_api_comparison
+    print(test.columns)
+    test["function_np"] = test["function_np"].str.rstrip(r"\.")
+    print(test)
