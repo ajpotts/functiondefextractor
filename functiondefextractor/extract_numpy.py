@@ -45,6 +45,7 @@ def get_numpy_calls_stats(df, lib_name: str, out_dir: str):
     )
 
     df_call_stats.columns = df_call_stats.columns.get_level_values(1)
+    df_call_stats["used_by_" + lib_name] = df_call_stats["total_np_calls"] > 0
 
     df_call_stats = df_call_stats.sort_values(
         by=[
@@ -119,6 +120,7 @@ def enhance_numpy_api():
     df["numpy_api_link"] = (
         "https://numpy.org/doc/stable/reference/generated/" + df["np"].astype(str) + ".html"
     )
+    df = df.drop_duplicates()
     my_out = out_dir + "numpy_api_enhanced.csv"
     df.to_csv(my_out)
     return df
@@ -175,7 +177,8 @@ def generate_api_comparision(np_df, ak_df):
     api_comparison = api_comparison[
         ["function_name", "np", "function_np", "numpy_api_link", "ak", "function_ak", "arkouda_api_link"]
     ]
-    api_comparison["ak_coverage"] = api_comparison["function_ak"].notnull()
+    api_comparison["partial_ak_coverage"] = api_comparison["function_ak"].notnull()
+    api_comparison = api_comparison.drop_duplicates()
 
     my_out = out_dir + "np_ak_api_comparison.csv"
     api_comparison.to_csv(my_out)
@@ -194,11 +197,46 @@ def merge_arkoua_api_onto(libname: str, df_call_stats: pd.DataFrame, api_compari
     return merged_df
 
 
+def get_coverage_stats(lib_name: str, df: pd.DataFrame):
+    stats = df.groupby(["partial_ak_coverage"]).agg(["count", "nunique", "sum"])
+    stats = stats[
+        [
+            ("function_np", "nunique"),
+            ("total_np_calls", "sum"),
+            ("num_" + lib_name + "_funs_used_by", "sum"),
+            ("used_by_" + lib_name, "sum"),
+        ]
+    ]
+    stats.columns = stats.columns.get_level_values(0) + "_" + stats.columns.get_level_values(1)
+    stats = stats.rename(
+        columns={
+            "function_np_nunique": "total_unique_numpy_functions",
+            "used_by_"+lib_name+"_sum": "total_unique_numpy_functions_used_by_" + lib_name,
+            "total_np_calls_sum": "total_np_calls",
+            "num_"+lib_name+"_funs_used_by_sum": "num_"+lib_name+"_funs_used",
+        }
+    )
+
+    stats = stats[
+        [
+            "total_unique_numpy_functions",
+            "total_np_calls",
+            "num_" + lib_name + "_funs_used",
+            "total_unique_numpy_functions_used_by_" + lib_name,
+        ]
+    ]
+
+    my_out = out_dir + lib_name + "_coverage_stats.csv"
+    stats.to_csv(my_out)
+    return stats
+
+
 if __name__ == "__main__":
     out_dir = "/home/amandapotts/git/functiondefextractor/data/out/"
     scipy_path = "/home/amandapotts/git/scipy/scipy"
     pandas_path = "/home/amandapotts/git/pandas/pandas"
     arkouda_path = "/home/amandapotts/git/arkouda/arkouda"
+    nltk_path = "/home/amandapotts/git/nltk/nltk"
 
     np_api_sheet = "/home/amandapotts/git/functiondefextractor/data/numpy_api/np.csv"
     arkouda_docs_path = "/home/amandapotts/git/arkouda/docs/autoapi/arkouda/"
@@ -210,11 +248,12 @@ if __name__ == "__main__":
     arkouda_df, arkouda_df_call_stats, arkouda_df_args = run_stats("arkouda", arkouda_path, out_dir)
     scipy_df, scipy_df_call_stats, scipy_df_args = run_stats("scipy", scipy_path, out_dir)
     pandas_df, pandas_df_call_stats, pandas_df_args = run_stats("pandas", pandas_path, out_dir)
+    nltk_df, nltk_df_call_stats, nltk_df_args = run_stats("nltk", nltk_path, out_dir)
 
     scipy_api_comparison = merge_arkoua_api_onto("scipy", scipy_df_call_stats, api_comparison)
     pandas_api_comparison = merge_arkoua_api_onto("pandas", pandas_df_call_stats, api_comparison)
+    nltk_api_comparison = merge_arkoua_api_onto("nltk", nltk_df_call_stats, api_comparison)
 
-    test = scipy_api_comparison
-    print(test.columns)
-    test["function_np"] = test["function_np"].str.rstrip(r"\.")
-    print(test)
+    get_coverage_stats("scipy", scipy_api_comparison)
+    get_coverage_stats("pandas", pandas_api_comparison)
+    get_coverage_stats("nltk", nltk_api_comparison)
