@@ -1,0 +1,3 @@
+partial_ak_coverage,total_unique_numpy_functions,total_np_calls,num_sklearn_funs_used,total_unique_numpy_functions_used_by_sklearn
+False,1047,9670.0,7716.0,164
+True,297,12019.0,7984.0,147

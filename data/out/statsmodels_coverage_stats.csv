@@ -1,0 +1,3 @@
+partial_ak_coverage,total_unique_numpy_functions,total_np_calls,num_statsmodels_funs_used,total_unique_numpy_functions_used_by_statsmodels
+False,1047,14724.0,9378.0,176
+True,297,19166.0,11248.0,148

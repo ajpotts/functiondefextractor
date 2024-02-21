@@ -1,5 +1,5 @@
 ,function_np,total_np_calls,num_pandas_funs_used_by,used_by_pandas
-0,nan,5318,1999,True
+0,nan,24060,19404,True
 1,array,3615,1816,True
 2,random.default_rng,1923,1383,True
 3,arange,1393,1012,True

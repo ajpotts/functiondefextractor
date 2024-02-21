@@ -301,14 +301,20 @@ def get_lib_coverage(lib_name: str, df: pd.DataFrame, api_comparison: pd.DataFra
 
 
 if __name__ == "__main__":
+    git_dir = "/home/amandapotts/git/"
     out_dir = "/home/amandapotts/git/functiondefextractor/data/out/"
-    scipy_path = "/home/amandapotts/git/scipy/scipy"
-    pandas_path = "/home/amandapotts/git/pandas/pandas"
-    arkouda_path = "/home/amandapotts/git/arkouda/arkouda"
-    nltk_path = "/home/amandapotts/git/nltk/nltk"
-
     np_api_sheet = "/home/amandapotts/git/functiondefextractor/data/numpy_api/np.csv"
     arkouda_docs_path = "/home/amandapotts/git/arkouda/docs/autoapi/arkouda/"
+    arkouda_path = "/home/amandapotts/git/arkouda/arkouda/"
+
+    lib_names = [
+        ("pandas", "pandas"),
+        ("scipy", "scipy"),
+        ("nltk", "nltk"),
+        ("scikit-learn", "sklearn"),
+        ("statsmodels", "statsmodels"),
+        ("networkx", "networkx"),
+    ]
 
     np_df = enhance_numpy_api()
     ak_df = get_arkouda_api_df_from_docs(arkouda_docs_path, out_dir)
@@ -316,11 +322,6 @@ if __name__ == "__main__":
 
     arkouda_df, arkouda_df_call_stats, arkouda_df_args = run_stats("arkouda", arkouda_path, out_dir)
 
-    scipy_df, scipy_df_call_stats, scipy_df_args, scipy_api_comparison, scipy_coverage_stats, scipy_lib_coverage_stats = run_all(
-        "scipy", scipy_path, out_dir, api_comparison
-    )
-
-    run_all("pandas", pandas_path, out_dir, api_comparison)
-    run_all("nltk", nltk_path, out_dir, api_comparison)
-
-
+    for lib_dir, lib_name in lib_names:
+        lib_path = git_dir + lib_dir + "/" + lib_name
+        run_all(lib_name, lib_path, out_dir, api_comparison)

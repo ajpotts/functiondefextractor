@@ -1,5 +1,5 @@
 ,index,function_np,total_np_calls,num_pandas_funs_used_by,used_by_pandas,function_name,np,numpy_api_link,ak,function_ak,arkouda_api_link,partial_ak_coverage
-0,0,nan,5318.0,1999.0,True,nan,numpy.nan,https://numpy.org/doc/stable/reference/generated/numpy.nan.html,,,,False
+0,0,nan,24060.0,19404.0,True,nan,numpy.nan,https://numpy.org/doc/stable/reference/generated/numpy.nan.html,,,,False
 1,350,array,3615.0,1816.0,True,array,numpy.array,https://numpy.org/doc/stable/reference/generated/numpy.array.html,arkouda.pdarraycreation.array,pdarraycreation.array,file:///home/amandapotts/git/arkouda/docs/autoapi/arkouda/alignment/index.html#arkouda.pdarraycreation.array,True
 2,351,random.default_rng,1923.0,1383.0,True,default_rng,numpy.random.default_rng,https://numpy.org/doc/stable/reference/generated/numpy.random.default_rng.html,,,,False
 3,352,arange,1393.0,1012.0,True,arange,numpy.arange,https://numpy.org/doc/stable/reference/generated/numpy.arange.html,arkouda.pdarraycreation.arange,pdarraycreation.arange,file:///home/amandapotts/git/arkouda/docs/autoapi/arkouda/alignment/index.html#arkouda.pdarraycreation.arange,True
