@@ -1,6 +1,7 @@
 import os
 import re
 
+import numpy as np
 import pandas as pd
 from core_extractor import extractor, get_report
 
@@ -16,6 +17,7 @@ def add_numpy_calls(df):
 def add_library_functions(df: pd.DataFrame, lib_name: str, lib_path: str):
     df[lib_name + "_function"] = df["Uniq ID"].str.findall(lib_path + "([\w_/\.]*)")
     df = df.explode(lib_name + "_function")
+    df[lib_name + "_function"] = df[lib_name + "_function"].astype(str)
     df[lib_name + "_function"] = df[lib_name + "_function"].str.replace("(\.$)", "")
     return df
 
@@ -31,9 +33,10 @@ def get_and_write_np_stats(lib_name: str, lib_path: str, out_dir: str):
 
 def get_numpy_calls_stats(df, lib_name: str, out_dir: str):
     df_np_calls = df.explode("np_calls")[[lib_name + "_function", "np_calls"]]
+    df_np_calls["np_calls"] = df_np_calls["np_calls"].astype(str)
     df_np_calls = df_np_calls[df_np_calls["np_calls"].notnull()]
     df_np_calls[lib_name + "_function"] = df_np_calls[lib_name + "_function"].str.rstrip(r"\.")
-    df_np_calls = df_np_calls.explode("np_calls")
+    # df_np_calls = df_np_calls.explode("np_calls")
 
     df_np_calls = df_np_calls.rename(columns={"np_calls": "function_np"})
     df_np_calls["function_np"] = df_np_calls["function_np"].str.rstrip(r"\.")
@@ -67,6 +70,7 @@ def get_numpy_arg_stats(df: pd.DataFrame, lib_name: str, out_dir: str):
     df_args = df_args[df_args["np_calls_w_args"].notnull()][[lib_name + "_function", "np_calls_w_args"]]
     df_args["np_call"] = df_args["np_calls_w_args"].str.findall(r"(^[\w\.]*)")
     df_args = df_args.explode("np_call")
+    df_args["np_call"] = df_args["np_call"].astype(str)
     df_args["np_args"] = df_args["np_calls_w_args"].str.findall(r"([\w\._]*)\s*=[^=<>!]")
     df_args = df_args.explode("np_args")
     df_args = df_args[df_args["np_args"].notnull()]
@@ -191,7 +195,13 @@ def merge_arkoua_api_onto(libname: str, df_call_stats: pd.DataFrame, api_compari
     merged_df = df_call_stats.merge(api_comparison, on=["function_np"], how="outer")
     merged_df = merged_df[(merged_df["function_np"] != "nan") | (merged_df["function_name"] == "nan")]
     merged_df = merged_df.reset_index()
+    return merged_df
 
+
+def merge_and_write_arkoua_api_onto(
+    libname: str, df_call_stats: pd.DataFrame, api_comparison: pd.DataFrame, out_dir: str
+):
+    merged_df = merge_arkoua_api_onto(libname, df_call_stats, api_comparison)
     my_out = out_dir + libname + "_api_comparison.csv"
     merged_df.to_csv(my_out)
     return merged_df
@@ -211,9 +221,9 @@ def get_coverage_stats(lib_name: str, df: pd.DataFrame):
     stats = stats.rename(
         columns={
             "function_np_nunique": "total_unique_numpy_functions",
-            "used_by_"+lib_name+"_sum": "total_unique_numpy_functions_used_by_" + lib_name,
+            "used_by_" + lib_name + "_sum": "total_unique_numpy_functions_used_by_" + lib_name,
             "total_np_calls_sum": "total_np_calls",
-            "num_"+lib_name+"_funs_used_by_sum": "num_"+lib_name+"_funs_used",
+            "num_" + lib_name + "_funs_used_by_sum": "num_" + lib_name + "_funs_used",
         }
     )
 
@@ -231,6 +241,65 @@ def get_coverage_stats(lib_name: str, df: pd.DataFrame):
     return stats
 
 
+def run_all(lib_name: str, code_path: str, oud_dir: str, api_comparison: pd.DataFrame):
+    df, df_call_stats, df_args = run_stats(lib_name, code_path, out_dir)
+    lib_api_comparison = merge_and_write_arkoua_api_onto(
+        lib_name, df_call_stats, api_comparison, out_dir
+    )
+    coverage_stats = get_coverage_stats(lib_name, lib_api_comparison)
+    lib_coverage_stats = get_lib_coverage(lib_name, df, api_comparison)
+    return df, df_call_stats, df_args, lib_api_comparison, coverage_stats, lib_coverage_stats
+
+
+def get_lib_coverage(lib_name: str, df: pd.DataFrame, api_comparison: pd.DataFrame):
+    df = df[[lib_name + "_function", "np_calls"]]
+    df = df.explode("np_calls")
+    df["np_calls"] = df["np_calls"].astype(str)
+    df = df.drop_duplicates()
+    df["function_np"] = df["np_calls"]
+
+    merged_df = merge_arkoua_api_onto(lib_name, df, api_comparison)
+    merged_df = merged_df.sort_values(
+        by=[
+            lib_name + "_function",
+        ],
+        ascending=True,
+    )
+
+    merged_df = merged_df[[lib_name + "_function", "np_calls", "function_ak", "partial_ak_coverage"]]
+    merged_df = merged_df.drop_duplicates()
+    merged_df["np_calls"] = merged_df["np_calls"].astype(str)
+    merged_df["function_ak"] = merged_df["function_ak"].astype(str)
+
+    grouped_df = merged_df.groupby([lib_name + "_function"]).agg(["sum", np.array]).copy(deep=True)
+    grouped_df.columns = (
+        grouped_df.columns.get_level_values(0) + "_" + grouped_df.columns.get_level_values(1)
+    )
+    grouped_df = grouped_df[["partial_ak_coverage_sum", "np_calls_array", "function_ak_array"]]
+    grouped_df["partial_ak_coverage_sum"] = 1 * grouped_df["partial_ak_coverage_sum"]
+    grouped_df["function_ak_array"] = grouped_df["function_ak_array"].apply(lambda x: x[x != "nan"])
+    grouped_df["np_calls_array"] = grouped_df["np_calls_array"].apply(lambda x: x[x != "nan"])
+    grouped_df["np_calls_count"] = grouped_df["np_calls_array"].apply(lambda x: len(x))
+    grouped_df["coverage"] = (grouped_df["partial_ak_coverage_sum"] + 0.0001) / (
+        grouped_df["np_calls_count"] + 0.0001
+    )
+    grouped_df["coverage"] = grouped_df["coverage"].astype(float).round(decimals=2)
+
+    grouped_df = grouped_df[
+        [
+            "coverage",
+            "np_calls_count",
+            "partial_ak_coverage_sum",
+            "np_calls_array",
+            "function_ak_array",
+        ]
+    ]
+
+    my_out = out_dir + lib_name + "_library_coverage_stats.csv"
+    grouped_df.to_csv(my_out)
+    return grouped_df
+
+
 if __name__ == "__main__":
     out_dir = "/home/amandapotts/git/functiondefextractor/data/out/"
     scipy_path = "/home/amandapotts/git/scipy/scipy"
@@ -246,14 +315,12 @@ if __name__ == "__main__":
     api_comparison = generate_api_comparision(np_df, ak_df)
 
     arkouda_df, arkouda_df_call_stats, arkouda_df_args = run_stats("arkouda", arkouda_path, out_dir)
-    scipy_df, scipy_df_call_stats, scipy_df_args = run_stats("scipy", scipy_path, out_dir)
-    pandas_df, pandas_df_call_stats, pandas_df_args = run_stats("pandas", pandas_path, out_dir)
-    nltk_df, nltk_df_call_stats, nltk_df_args = run_stats("nltk", nltk_path, out_dir)
 
-    scipy_api_comparison = merge_arkoua_api_onto("scipy", scipy_df_call_stats, api_comparison)
-    pandas_api_comparison = merge_arkoua_api_onto("pandas", pandas_df_call_stats, api_comparison)
-    nltk_api_comparison = merge_arkoua_api_onto("nltk", nltk_df_call_stats, api_comparison)
+    scipy_df, scipy_df_call_stats, scipy_df_args, scipy_api_comparison, scipy_coverage_stats, scipy_lib_coverage_stats = run_all(
+        "scipy", scipy_path, out_dir, api_comparison
+    )
 
-    get_coverage_stats("scipy", scipy_api_comparison)
-    get_coverage_stats("pandas", pandas_api_comparison)
-    get_coverage_stats("nltk", nltk_api_comparison)
+    run_all("pandas", pandas_path, out_dir, api_comparison)
+    run_all("nltk", nltk_path, out_dir, api_comparison)
+
+

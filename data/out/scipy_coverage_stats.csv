@@ -1,3 +1,3 @@
 partial_ak_coverage,total_unique_numpy_functions,total_np_calls,num_scipy_funs_used,total_unique_numpy_functions_used_by_scipy
-False,1047,11950.0,6827.0,273
+False,1047,23919.0,16540.0,273
 True,297,29025.0,17470.0,183
