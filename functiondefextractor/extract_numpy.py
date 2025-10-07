@@ -7,6 +7,7 @@ from core_extractor import extractor, get_report
 
 
 def add_numpy_calls(df):
+    df["Code"] = df["Code"].astype(str)
     df["np_calls"] = df["Code"].str.findall(r"np\.([\w\._]*)")
     df["num_np_calls"] = df["np_calls"].apply(lambda x: len(x))
     df["np_calls_w_args"] = df["Code"].str.findall(r"np\.([\w\_\.]+\(.*\))")
@@ -15,11 +16,15 @@ def add_numpy_calls(df):
 
 
 def add_library_functions(df: pd.DataFrame, lib_name: str, lib_path: str):
-    df[lib_name + "_function"] = df["Uniq ID"].str.findall(lib_path + "([\w_/\.]*)")
-    df = df.explode(lib_name + "_function")
-    df[lib_name + "_function"] = df[lib_name + "_function"].astype(str)
-    df[lib_name + "_function"] = df[lib_name + "_function"].str.replace("(\.$)", "")
+    try:
+        df[lib_name + "_function"] = df["Uniq ID"].str.findall(lib_path + r"([\w_/\.]*)")
+        df = df.explode(lib_name + "_function")
+        df[lib_name + "_function"] = df[lib_name + "_function"].astype(str)
+        df[lib_name + "_function"] = df[lib_name + "_function"].str.replace(r"(\.$)", "", regex=True)
+    except Exception as e:
+        print(f"Error processing library functions for {lib_name}: {e}")
     return df
+
 
 
 def get_and_write_np_stats(lib_name: str, lib_path: str, out_dir: str):
@@ -32,37 +37,42 @@ def get_and_write_np_stats(lib_name: str, lib_path: str, out_dir: str):
 
 
 def get_numpy_calls_stats(df, lib_name: str, out_dir: str):
-    df_np_calls = df.explode("np_calls")[[lib_name + "_function", "np_calls"]]
-    df_np_calls["np_calls"] = df_np_calls["np_calls"].astype(str)
-    df_np_calls = df_np_calls[df_np_calls["np_calls"].notnull()]
-    df_np_calls[lib_name + "_function"] = df_np_calls[lib_name + "_function"].str.rstrip(r"\.")
-    # df_np_calls = df_np_calls.explode("np_calls")
+    try:
+        df_np_calls = df.explode("np_calls")[[lib_name + "_function", "np_calls"]]
+        df_np_calls["np_calls"] = df_np_calls["np_calls"].astype(str)
+        df_np_calls = df_np_calls[df_np_calls["np_calls"].notnull()]
+        df_np_calls[lib_name + "_function"] = df_np_calls[lib_name + "_function"].str.rstrip(r"\.")
 
-    df_np_calls = df_np_calls.rename(columns={"np_calls": "function_np"})
-    df_np_calls["function_np"] = df_np_calls["function_np"].str.rstrip(r"\.")
+        df_np_calls = df_np_calls.rename(columns={"np_calls": "function_np"})
+        df_np_calls["function_np"] = df_np_calls["function_np"].str.rstrip(r"\.")
 
-    df_call_stats = (
-        df_np_calls.groupby(["function_np"])
-        .agg(["count", "nunique"])
-        .rename(columns={"count": "total_np_calls", "nunique": "num_" + lib_name + "_funs_used_by"})
-    )
+        df_call_stats = (
+            df_np_calls.groupby(["function_np"])
+            .agg(["count", "nunique"])
+            .rename(columns={"count": "total_np_calls", "nunique": "num_" + lib_name + "_funs_used_by"})
+        )
 
-    df_call_stats.columns = df_call_stats.columns.get_level_values(1)
-    df_call_stats["used_by_" + lib_name] = df_call_stats["total_np_calls"] > 0
+        df_call_stats.columns = df_call_stats.columns.get_level_values(1)
+        df_call_stats["used_by_" + lib_name] = df_call_stats["total_np_calls"] > 0
 
-    df_call_stats = df_call_stats.sort_values(
-        by=[
-            "num_" + lib_name + "_funs_used_by",
-            "total_np_calls",
-        ],
-        ascending=False,
-    )
+        df_call_stats = df_call_stats.sort_values(
+            by=[
+                "num_" + lib_name + "_funs_used_by",
+                "total_np_calls",
+            ],
+            ascending=False,
+        )
 
-    df_call_stats = df_call_stats.reset_index(col_fill=["function_np", "np_arg"])
+        df_call_stats = df_call_stats.reset_index(col_fill=["function_np", "np_arg"])
 
-    my_out = out_dir + lib_name + "_np_call_stats.csv"
-    df_call_stats.to_csv(my_out)
-    return df_call_stats
+        my_out = out_dir + lib_name + "_np_call_stats.csv"
+        df_call_stats.to_csv(my_out)
+        return df_call_stats
+
+    except Exception as e:
+        print(f"Error generating NumPy call stats for {lib_name}: {e}")
+        return pd.DataFrame()
+
 
 
 def get_numpy_arg_stats(df: pd.DataFrame, lib_name: str, out_dir: str):
@@ -129,6 +139,48 @@ def enhance_numpy_api():
     df.to_csv(my_out)
     return df
 
+import re
+from bs4 import BeautifulSoup
+
+import re
+from bs4 import BeautifulSoup
+
+# def extract_api(filename):
+#     """
+#     Extracts all arkouda API names from an HTML documentation file.
+#
+#     Parameters
+#     ----------
+#     filename : str
+#         Path to the HTML file.
+#
+#     Returns
+#     -------
+#     List[str]
+#         A sorted list of unique arkouda API object names found in the HTML.
+#     """
+#     with open(filename, mode="rt", encoding="utf-8") as docFile:
+#         soup = BeautifulSoup(docFile, "html.parser")
+#
+#     matches = set()
+#     pattern = re.compile(r"arkouda\.[\w\._]+")
+#
+#     # Extract from title attributes
+#     for tag in soup.find_all(attrs={"title": pattern}):
+#         title = tag.get("title", "")
+#         match = re.match(pattern, title)
+#         if match:
+#             matches.add(match.group(0))
+#
+#     # # Extract from id attributes (e.g., <dt id="arkouda.putmask">)
+#     # for tag in soup.find_all(id=pattern):
+#     #     id_val = tag.get("id", "")
+#     #     match = re.match(pattern, id_val)
+#     #     if match:
+#     #         matches.add(match.group(0))
+#
+#     return sorted(matches)
+
 
 def extract_api(filename):
     p = re.compile(r"title=\"(arkouda\.[\w\._]*)")
@@ -139,8 +191,6 @@ def extract_api(filename):
 
 
 def get_arkouda_api_from_docs(rootdir: str):
-    regex = re.compile("(.*index.html)")
-
     api_list = []
     for root, dirs, files in os.walk(rootdir):
         if len(dirs) > 0:
@@ -304,8 +354,9 @@ if __name__ == "__main__":
     git_dir = "/home/amandapotts/git/"
     out_dir = "/home/amandapotts/git/functiondefextractor/data/out/"
     np_api_sheet = "/home/amandapotts/git/functiondefextractor/data/numpy_api/np.csv"
-    arkouda_docs_path = "/home/amandapotts/git/arkouda/docs/autoapi/arkouda/"
+    arkouda_docs_path = "/home/amandapotts/git/arkouda/docs/autoapi"
     arkouda_path = "/home/amandapotts/git/arkouda/arkouda/"
+
 
     lib_names = [
         ("pandas", "pandas"),
@@ -319,6 +370,8 @@ if __name__ == "__main__":
     np_df = enhance_numpy_api()
     ak_df = get_arkouda_api_df_from_docs(arkouda_docs_path, out_dir)
     api_comparison = generate_api_comparision(np_df, ak_df)
+    api_comparison.loc[api_comparison["function_name"] == "ndarray", "partial_ak_coverage"] = True
+
 
     arkouda_df, arkouda_df_call_stats, arkouda_df_args = run_stats("arkouda", arkouda_path, out_dir)
 

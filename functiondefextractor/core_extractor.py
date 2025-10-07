@@ -323,26 +323,53 @@ def get_py_func_body(line_numbers, file_name, annot):
     return func_name, func_body
 
 
+import os
+
 def process_py_methods(file_name, line_numbers, line_data):
-    """ This Function refines the python function names to remove any class or lamida functions
-        @parameters
-        filename: Path to the file
-        line_num: function/method line number
-        line_data: File content in list format
-        @return
-        This function returns processed python function/method names and definitions in the given files"""
+    """
+    This Function refines the python function names to remove any class or lambda functions.
+
+    Parameters
+    ----------
+    file_name : str
+        Path to the file
+    line_numbers : list of int
+        Line numbers where functions/methods start
+    line_data : list of str
+        File content in list format
+
+    Returns
+    -------
+    tuple of (list of str, list of str)
+        Returns processed Python function/method definitions and their refined names
+    """
     data = []
     data_func_name = []
-    for i, _ in enumerate(line_numbers):
-        start = line_numbers[i]
-        stop = len(line_data) if i == len(line_numbers) - 1 else line_numbers[i + 1] - 1
-        data.append(os.linesep.join(line_data[start - 1:stop]))  # pragma: no mutate
-        data_func_name.append(str(file_name) + "_" + str(line_data[start - 1].strip().split(" ")[1].split("(")[0]))
-        if data[len(data) - 1].startswith("class") or "lambda" in data[len(data) - 1]:
-            data.remove(data[len(data) - 1])
-            data_func_name.pop(len(data_func_name) - 1)
-    return data, data_func_name
 
+    for i, start in enumerate(line_numbers):
+        stop = len(line_data) if i == len(line_numbers) - 1 else line_numbers[i + 1] - 1
+        snippet = os.linesep.join(line_data[start - 1:stop])
+        data.append(snippet)
+
+        try:
+            line = line_data[start - 1].strip()
+            if line.startswith("class") or "lambda" in line:
+                data.pop()  # remove last entry just added
+                continue
+
+            parts = line.split()
+            if len(parts) < 2:
+                raise ValueError("Line too short to contain function name")
+
+            func_part = parts[1]
+            func_name = func_part.split("(")[0]
+            data_func_name.append(f"{file_name}_{func_name}")
+        except Exception as e:
+            # Skip problematic lines
+            print(f"Skipping line {start} in {file_name} due to error: {e}")
+            data.pop()  # remove last entry just added
+
+    return data, data_func_name
 
 def get_py_annot_methods(file_name, data_func_name, data, annot):
     """ This function filters the python functions to get methods that have given annotation
